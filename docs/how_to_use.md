@@ -20,7 +20,7 @@ variable "mongodb_private_key" {
 <img src="https://github.com/Daesfd/youtube_data_kafka_etl/blob/main/docs/confluent_kafka_images/2.png" width="800" height="300">
 <img src="https://github.com/Daesfd/youtube_data_kafka_etl/blob/main/docs/confluent_kafka_images/3.png" width="500" height="300">
 
-4, In each directory of Terraform/confluent_kafka/*/variables.tf, change the API key and secreto to the one you got in 3.:
+4, In Terraform/confluent_kafka/module/variables.tf, change the API key and secret to the one you got in 3.:
 ```
 variable "confluent_cloud_api_key" {
   type = string
@@ -36,22 +36,27 @@ variable "confluent_cloud_api_secret" {
 5. Create, in confluent, a Kafka cluster and get the cluster ID:
 <img src="https://github.com/Daesfd/youtube_data_kafka_etl/blob/main/docs/confluent_kafka_images/4.png" width="800" height="300">
 
-6. In each directory of Terraform/confluent_kafka/*/main.tf, put the cluster ID in data "confluent_kafka_cluster":
+6. In Terraform/confluent_kafka/module/variables.tf, put the cluster ID in "confluent_cluster_id":
 ```
-data "confluent_kafka_cluster" "basic" {
-  id = "Your cluster ID"
-  environment {
-    id = data.confluent_environment.Development.id
-  }
+variable "confluent_cluster_id" {
+  type = string
+  default = "Your confluent cluster id"
 }
 ```
 
-7. In a console, at folder ./Terraform/, execute these following codes:
+7. In a console, at folder ./Terraform/, initialize and apply all these codes:
 ```
-terraform -chdir=mongodb_atlas plan 
-terraform -chdir=confluent_kafka/kafka_topic plan
-terraform -chdir=confluent_kafka/ksql_cluster plan
-terraform -chdir=confluent_kafka/mongo_db_connection plan
+terraform -chdir=confluent_kafka_module init
+terraform -chdir=mongodb_atlas init 
+terraform -chdir=confluent_kafka/kafka_topic init
+terraform -chdir=confluent_kafka/ksql_cluster init
+terraform -chdir=confluent_kafka/mongo_db_connection init
+
+terraform -chdir=confluent_kafka_module apply
+terraform -chdir=mongodb_atlas apply 
+terraform -chdir=confluent_kafka/kafka_topic apply
+terraform -chdir=confluent_kafka/ksql_cluster apply
+terraform -chdir=confluent_kafka/mongo_db_connection apply
 ```
 
 8. Create, in confluent, a schema registry API key:
