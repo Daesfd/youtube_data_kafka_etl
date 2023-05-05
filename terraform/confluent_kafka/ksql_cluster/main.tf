@@ -7,9 +7,30 @@ terraform {
   }
 }
 
+data "terraform_remote_state" "conf_config" {
+  backend = "local"
+
+  config = {
+    path = "../module/terraform.tfstate"
+  }
+}
+
+locals {
+  confluent_cloud_api_key = data.terraform_remote_state.conf_config.outputs["confluent_api_key"]
+}
+
+locals {
+  confluent_cloud_api_secret = data.terraform_remote_state.conf_config.outputs["confluent_api_secret"]
+}
+
+locals {
+  confluent_cluster_id = data.terraform_remote_state.conf_config.outputs["kafka_cluster_id"]
+}
+
+
 provider "confluent" {
-  cloud_api_key    = var.confluent_cloud_api_key    # optionally use CONFLUENT_CLOUD_API_KEY env var
-  cloud_api_secret = var.confluent_cloud_api_secret # optionally use CONFLUENT_CLOUD_API_SECRET env var
+  cloud_api_key    = local.confluent_cloud_api_key    # optionally use CONFLUENT_CLOUD_API_KEY env var
+  cloud_api_secret = local.confluent_cloud_api_secret # optionally use CONFLUENT_CLOUD_API_SECRET env var
 }
 
 data "confluent_environment" "Development" {
@@ -17,7 +38,7 @@ data "confluent_environment" "Development" {
 }
 
 data "confluent_kafka_cluster" "basic" {
-  id = "Your cluster ID"
+  id = local.confluent_cluster_id
   environment {
     id = data.confluent_environment.Development.id
   }
