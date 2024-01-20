@@ -14,7 +14,7 @@ variable "mongodb_private_key" {
   default = "Your mongodb Atlas private key"
 }
 ```
-
+aaaaaaaaaaaa
 3. In a Confluent Kafka environment, create an API Key:
 <img src="https://github.com/Daesfd/youtube_data_kafka_etl/blob/main/docs/confluent_kafka_images/1.png" width="800" height="300">
 <img src="https://github.com/Daesfd/youtube_data_kafka_etl/blob/main/docs/confluent_kafka_images/2.png" width="800" height="300">
